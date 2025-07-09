@@ -46,6 +46,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('currentUser', JSON.stringify(foundUser));
       return true;
     }
+    // Check for Neško Nešić with special password
+    else if (foundUser && foundUser.email === 'neschkonesic@gmail.com' && password === '1Flasicradule!') {
+      console.log('Neško Nešić login successful with special password');
+      setUser(foundUser);
+      setIsAuthenticated(true);
+      localStorage.setItem('currentUser', JSON.stringify(foundUser));
+      return true;
+    }
     // Check for other users with default password
     else if (foundUser && password === 'admin123') {
       console.log('Regular user login successful');
