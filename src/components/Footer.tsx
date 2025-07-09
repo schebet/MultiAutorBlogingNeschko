@@ -1,5 +1,5 @@
 import React from 'react';
-import { PenTool, Mail, Phone, MapPin } from 'lucide-react';
+import { PenTool, Mail, Phone, MapPin, Github } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -16,6 +16,17 @@ const Footer: React.FC = () => {
               Чувамо традицију, делимо приче и негујемо културу Заплањског краја. 
               Место где се окупљају љубитељи традиције и локалне историје.
             </p>
+            <div className="mt-4">
+              <a
+                href="https://github.com/schebet/MultiAutorBlogingNeschko"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
+              >
+                <Github className="h-5 w-5" />
+                <span>GitHub пројекат</span>
+              </a>
+            </div>
           </div>
 
           {/* Categories */}
@@ -67,7 +78,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-400 text-sm">
-            © 2024 Нешто пишујем. Сва права задржана.
+            © 2024 Заплањске приче. Сва права задржана.
           </p>
         </div>
       </div>

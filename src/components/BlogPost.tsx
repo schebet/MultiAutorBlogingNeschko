@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { ArrowLeft, Calendar, User, Eye, Tag, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Eye, Tag, Share2, Github, ArrowUp, PenTool } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types';
 import { getRegisteredAuthors } from '../data/authors';
 
@@ -11,11 +11,22 @@ interface BlogPostProps {
 
 const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
   const author = getRegisteredAuthors().find(user => user.id === post.authorId);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [post.id]); // Re-run when post changes
+
+  // Show/hide scroll to top button based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Function to render markdown-like content as HTML
   const renderContent = (content: string) => {
@@ -76,6 +87,22 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
       navigator.clipboard.writeText(window.location.href);
       alert('Линк је копиран у клипборд!');
     }
+  };
+
+  const handleShareFacebook = () => {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(post.title);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`, '_blank', 'width=600,height=400');
+  };
+
+  const handleShareTelegram = () => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`${post.title} - ${post.excerpt}`);
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -169,14 +196,43 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
 
             {/* Share */}
             <div className="border-t border-gray-200 pt-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-sm font-medium text-gray-700">Подели:</span>
                   <button
                     onClick={handleShare}
-                    className="flex items-center space-x-2 bg-amber-800 text-amber-50 px-4 py-2 rounded-lg hover:bg-amber-900 transition-colors"
+                    className="flex items-center space-x-2 bg-amber-800 text-amber-50 px-3 py-2 rounded-lg hover:bg-amber-900 transition-colors text-sm"
                   >
                     <Share2 className="h-4 w-4" />
-                    <span>Подели</span>
+                    <span>Општи</span>
+                  </button>
+                  <button
+                    onClick={handleShareFacebook}
+                    className="flex items-center space-x-2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Facebook</span>
+                  </button>
+                  <button
+                    onClick={handleShareTelegram}
+                    className="flex items-center space-x-2 bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                  >
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                    </svg>
+                    <span>Telegram</span>
+                  </button>
+                  <a
+                    href="https://github.com/schebet/MultiAutorBlogingNeschko"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 bg-gray-800 text-white px-3 py-2 rounded-lg hover:bg-gray-900 transition-colors text-sm"
+                  >
+                    <Github className="h-4 w-4" />
+                    <span>GitHub</span>
+                  </a>
                   </button>
                 </div>
                 <div className="text-sm text-gray-500">
@@ -211,6 +267,20 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
           </div>
         )}
       </article>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 bg-amber-800 text-amber-50 p-3 rounded-full shadow-lg hover:bg-amber-900 transition-all duration-300 z-50 hover:scale-110"
+          title="Повратак на врх"
+        >
+          <div className="flex items-center justify-center">
+            <PenTool className="h-5 w-5" />
+            <ArrowUp className="h-4 w-4 ml-1" />
+          </div>
+        </button>
+      )}
     </div>
   );
 };

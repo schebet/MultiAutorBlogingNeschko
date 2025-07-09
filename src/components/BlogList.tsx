@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { Calendar, Eye, User, Tag, ArrowRight, PenTool } from 'lucide-react';
+import { Calendar, Eye, User, Tag, ArrowRight, PenTool, ArrowUp, Github } from 'lucide-react';
 import { BlogPost } from '../types';
 import { mockPosts, mockCategories } from '../data/mockData';
 import { getRegisteredAuthors } from '../data/authors';
@@ -13,10 +13,21 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [posts, setPosts] = useState(mockPosts);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // Show/hide scroll to top button based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Refresh posts when component mounts or when posts might have changed
@@ -74,6 +85,10 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
   const getAuthorName = (authorId: string) => {
     const author = getRegisteredAuthors().find(user => user.id === authorId);
     return author ? author.name : 'Непознат аутор';
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const PostCard: React.FC<{ post: BlogPost; featured?: boolean }> = ({ post, featured = false }) => (
@@ -208,6 +223,17 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
                   <span>Придружи се ауторима</span>
                 </div>
               </button>
+              <a
+                href="https://github.com/schebet/MultiAutorBlogingNeschko"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-2 border-amber-50 text-amber-50 px-8 py-3 rounded-lg font-semibold hover:bg-amber-50 hover:text-amber-800 transition-colors"
+              >
+                <div className="flex items-center space-x-2">
+                  <Github className="h-5 w-5" />
+                  <span>GitHub пројекат</span>
+                </div>
+              </a>
             </div>
           </div>
         </div>
@@ -298,6 +324,20 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
           </div>
         </aside>
       </div>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 bg-amber-800 text-amber-50 p-3 rounded-full shadow-lg hover:bg-amber-900 transition-all duration-300 z-50 hover:scale-110"
+          title="Повратак на врх"
+        >
+          <div className="flex items-center justify-center">
+            <PenTool className="h-5 w-5" />
+            <ArrowUp className="h-4 w-4 ml-1" />
+          </div>
+        </button>
+      )}
     </div>
   );
 };
