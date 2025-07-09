@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { Calendar, Eye, User, Tag, ArrowRight, PenTool, ArrowUp, Github } from 'lucide-react';
+import { Calendar, Eye, User, Tag, ArrowRight, PenTool, ArrowUp, Github, Share2 } from 'lucide-react';
 import { BlogPost } from '../types';
 import { mockPosts, mockCategories } from '../data/mockData';
 import { getRegisteredAuthors } from '../data/authors';
@@ -91,6 +91,41 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleShareFacebook = (post: BlogPost, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    const url = encodeURIComponent(`${window.location.origin}#post-${post.id}`);
+    const title = encodeURIComponent(post.title);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`, '_blank', 'width=600,height=400');
+  };
+
+  const handleShareTelegram = (post: BlogPost, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    const url = encodeURIComponent(`${window.location.origin}#post-${post.id}`);
+    const text = encodeURIComponent(`${post.title} - ${post.excerpt}`);
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+  };
+
+  const handleGeneralShare = async (post: BlogPost, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    const url = `${window.location.origin}#post-${post.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: post.excerpt,
+          url: url
+        });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      // Fallback for browsers that don't support native sharing
+      navigator.clipboard.writeText(url);
+      alert('Линк је копиран у клипборд!');
+    }
+  };
+
   const PostCard: React.FC<{ post: BlogPost; featured?: boolean }> = ({ post, featured = false }) => (
     <article 
       className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer ${
@@ -139,7 +174,7 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-1">
               <Tag className="h-4 w-4 text-gray-500" />
@@ -153,8 +188,40 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
           </button>
         </div>
 
+        {/* Social Share Buttons */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          <span className="text-xs text-gray-500 font-medium">Подели:</span>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={(e) => handleGeneralShare(post, e)}
+              className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-full transition-colors"
+              title="Подели"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+            <button
+              onClick={(e) => handleShareFacebook(post, e)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+              title="Подели на Facebook"
+            >
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </button>
+            <button
+              onClick={(e) => handleShareTelegram(post, e)}
+              className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+              title="Подели на Telegram"
+            >
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
         {post.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {post.tags.slice(0, 3).map(tag => (
               <span
                 key={tag}
