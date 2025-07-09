@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Calendar, User, Eye, Tag, Share2, Github, ArrowUp, PenTool } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types';
 import { getRegisteredAuthors } from '../data/authors';
