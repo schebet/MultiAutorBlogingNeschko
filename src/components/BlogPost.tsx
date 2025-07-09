@@ -233,7 +233,6 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
                     <Github className="h-4 w-4" />
                     <span>GitHub</span>
                   </a>
-                  </button>
                 </div>
                 <div className="text-sm text-gray-500">
                   Последњи пут измењено: {formatDate(post.updatedAt)}
