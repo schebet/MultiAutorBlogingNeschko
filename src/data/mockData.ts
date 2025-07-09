@@ -132,9 +132,6 @@ const defaultPosts: BlogPost[] = [
 // Export the posts with persistent storage
 export const mockPosts: BlogPost[] = getStoredPosts();
 
-// Export users that always gets fresh data
-export const mockUsers: User[] = getRegisteredAuthors();
-
 export const addPost = (post: BlogPost): void => {
   const currentPosts = getStoredPosts();
   currentPosts.unshift(post); // Add to beginning of array

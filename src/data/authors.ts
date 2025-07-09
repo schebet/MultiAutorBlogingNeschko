@@ -57,8 +57,21 @@ const defaultAuthors: User[] = [
 const getStoredAuthors = (): User[] => {
   const stored = localStorage.getItem('registeredAuthors');
   if (stored) {
-    return JSON.parse(stored);
+    const storedAuthors = JSON.parse(stored);
+    // Ensure super admin always has correct credentials
+    return storedAuthors.map(author => {
+      if (author.id === '1') {
+        return {
+          ...author,
+          email: 'djoricnenad@gmail.com',
+          role: 'super_admin'
+        };
+      }
+      return author;
+    });
   }
+  // If no stored data, save default authors and return them
+  saveAuthorsToStorage(defaultAuthors);
   return defaultAuthors;
 };
 
