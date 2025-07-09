@@ -118,6 +118,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               <p><strong>Супер админ:</strong> djoricnenad@gmail.com</p>
               <p><strong>Уредник:</strong> marko.petrovic@example.com</p>
               <p><strong>Аутор:</strong> ana.jovanovic@example.com</p>
+              <p><strong>Аутор:</strong> neschkonesic@gmail.com</p>
               <p><strong>Лозинка за остале:</strong> admin123</p>
             </div>
           </div>
