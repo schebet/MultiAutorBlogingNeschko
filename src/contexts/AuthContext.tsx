@@ -32,10 +32,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     // Get fresh user data from storage
     const allUsers = getRegisteredAuthors();
+    console.log('All users during login:', allUsers.map(u => ({ email: u.email, name: u.name, active: u.isActive })));
+    console.log('Trying to login with:', email, password);
+    
     const foundUser = allUsers.find(u => u.email === email && u.isActive);
+    console.log('Found user:', foundUser);
     
     // Check for super admin with special password
     if (foundUser && foundUser.email === 'djoricnenad@gmail.com' && password === '1Flasicradule!') {
+      console.log('Super admin login successful');
       setUser(foundUser);
       setIsAuthenticated(true);
       localStorage.setItem('currentUser', JSON.stringify(foundUser));
@@ -43,11 +48,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
     // Check for other users with default password
     else if (foundUser && password === 'admin123') {
+      console.log('Regular user login successful');
       setUser(foundUser);
       setIsAuthenticated(true);
       localStorage.setItem('currentUser', JSON.stringify(foundUser));
       return true;
     }
+    console.log('Login failed - user not found or wrong password');
     return false;
   };
 

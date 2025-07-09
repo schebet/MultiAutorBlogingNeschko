@@ -66,10 +66,14 @@ const defaultAuthors: User[] = [
 // Initialize authors from localStorage or use default
 const getStoredAuthors = (): User[] => {
   const stored = localStorage.getItem('registeredAuthors');
+  console.log('Getting stored authors, localStorage data:', stored);
+  
   if (stored) {
     const storedAuthors = JSON.parse(stored);
+    console.log('Parsed stored authors:', storedAuthors.map(a => ({ email: a.email, name: a.name })));
+    
     // Ensure super admin always has correct credentials
-    return storedAuthors.map(author => {
+    const updatedAuthors = storedAuthors.map(author => {
       if (author.id === '1') {
         return {
           ...author,
@@ -79,7 +83,12 @@ const getStoredAuthors = (): User[] => {
       }
       return author;
     });
+    
+    console.log('Updated authors:', updatedAuthors.map(a => ({ email: a.email, name: a.name })));
+    return updatedAuthors;
   }
+  
+  console.log('No stored data, using default authors');
   // If no stored data, save default authors and return them
   saveAuthorsToStorage(defaultAuthors);
   return defaultAuthors;
