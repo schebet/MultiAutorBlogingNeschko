@@ -12,7 +12,8 @@ import {
   User
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { mockPosts, mockUsers } from '../data/mockData';
+import { mockPosts } from '../data/mockData';
+import { getRegisteredAuthors } from '../data/authors';
 import { deletePost } from '../data/mockData';
 import { deleteAuthor } from '../data/authors';
 
@@ -24,7 +25,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const { user, canAdmin, canModerate } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [posts, setPosts] = useState(mockPosts);
-  const [users, setUsers] = useState(mockUsers);
+  const [users, setUsers] = useState(getRegisteredAuthors());
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Refresh data when component mounts and when posts are updated
@@ -35,10 +36,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         setPosts(JSON.parse(storedPosts));
       }
       
-      const storedAuthors = localStorage.getItem('registeredAuthors');
-      if (storedAuthors) {
-        setUsers(JSON.parse(storedAuthors));
-      }
+      setUsers(getRegisteredAuthors());
     };
     
     refreshData();

@@ -86,8 +86,9 @@ export const addNewAuthor = (author: User): void => {
   const currentAuthors = getStoredAuthors();
   currentAuthors.push(author);
   saveAuthorsToStorage(currentAuthors);
-  // У стварној апликацији, ово би се сачувало у базу података
-  registeredAuthors.push(author);
+  // Update the exported array
+  registeredAuthors.length = 0;
+  registeredAuthors.push(...currentAuthors);
 };
 
 export const getRegisteredAuthors = (): User[] => {

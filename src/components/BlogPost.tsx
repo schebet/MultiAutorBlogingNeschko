@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { ArrowLeft, Calendar, User, Eye, Tag, Share2 } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types';
-import { mockUsers } from '../data/mockData';
+import { getRegisteredAuthors } from '../data/authors';
 
 interface BlogPostProps {
   post: BlogPostType;
@@ -10,7 +10,7 @@ interface BlogPostProps {
 }
 
 const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
-  const author = mockUsers.find(user => user.id === post.authorId);
+  const author = getRegisteredAuthors().find(user => user.id === post.authorId);
 
   // Scroll to top when component mounts
   useEffect(() => {

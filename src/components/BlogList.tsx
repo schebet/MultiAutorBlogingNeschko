@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { Calendar, Eye, User, Tag, ArrowRight, PenTool } from 'lucide-react';
 import { BlogPost } from '../types';
-import { mockPosts, mockUsers, mockCategories } from '../data/mockData';
+import { mockPosts, mockCategories } from '../data/mockData';
+import { getRegisteredAuthors } from '../data/authors';
 
 interface BlogListProps {
   onSelectPost: (post: BlogPost) => void;
@@ -71,7 +72,7 @@ const BlogList: React.FC<BlogListProps> = ({ onSelectPost }) => {
   };
 
   const getAuthorName = (authorId: string) => {
-    const author = mockUsers.find(user => user.id === authorId);
+    const author = getRegisteredAuthors().find(user => user.id === authorId);
     return author ? author.name : 'Непознат аутор';
   };
 

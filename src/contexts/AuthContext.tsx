@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, AuthContextType } from '../types';
-import { mockUsers } from '../data/mockData';
+import { getRegisteredAuthors } from '../data/authors';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -30,8 +30,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // In a real application, this would make an API call
-    const foundUser = mockUsers.find(u => u.email === email && u.isActive);
+    // Get fresh user data from storage
+    const allUsers = getRegisteredAuthors();
+    const foundUser = allUsers.find(u => u.email === email && u.isActive);
     
     // Check for super admin with special password
     if (foundUser && foundUser.email === 'djoricnenad@gmail.com' && password === '1Flasicradule!') {
