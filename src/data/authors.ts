@@ -50,6 +50,16 @@ const defaultAuthors: User[] = [
     bio: 'Културолог и аутор чланака о локалној историји.',
     joinedAt: '2024-03-01',
     isActive: true
+  },
+  {
+    id: '6',
+    email: 'neschkonesic@gmail.com',
+    name: 'Neško Nešić',
+    role: 'author',
+    avatar: 'https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    bio: 'Аутор чланака о традицији и локалној историји.',
+    joinedAt: '2024-03-15',
+    isActive: true
   }
 ];
 
