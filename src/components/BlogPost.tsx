@@ -18,6 +18,69 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [post.id]); // Re-run when post changes
 
+  // Update meta tags for social sharing
+  useEffect(() => {
+    // Update page title
+    document.title = `${post.title} - Заплањске приче`;
+    
+    // Remove existing meta tags
+    const existingMetaTags = document.querySelectorAll('meta[property^="og:"], meta[name="twitter:"], meta[name="description"]');
+    existingMetaTags.forEach(tag => tag.remove());
+    
+    // Create new meta tags
+    const metaTags = [
+      { property: 'og:title', content: post.title },
+      { property: 'og:description', content: post.excerpt },
+      { property: 'og:type', content: 'article' },
+      { property: 'og:url', content: window.location.href },
+      { property: 'og:site_name', content: 'Заплањске приче' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: post.title },
+      { name: 'twitter:description', content: post.excerpt },
+      { name: 'description', content: post.excerpt }
+    ];
+    
+    // Add featured image if available
+    if (post.featuredImage) {
+      metaTags.push(
+        { property: 'og:image', content: post.featuredImage },
+        { property: 'og:image:width', content: '800' },
+        { property: 'og:image:height', content: '400' },
+        { name: 'twitter:image', content: post.featuredImage }
+      );
+    }
+    
+    // Add author information
+    if (author) {
+      metaTags.push(
+        { property: 'article:author', content: author.name },
+        { property: 'article:published_time', content: post.publishedAt || post.createdAt },
+        { property: 'article:modified_time', content: post.updatedAt },
+        { property: 'article:section', content: post.category }
+      );
+    }
+    
+    // Add tags
+    post.tags.forEach(tag => {
+      metaTags.push({ property: 'article:tag', content: tag });
+    });
+    
+    // Append meta tags to head
+    metaTags.forEach(({ property, name, content }) => {
+      const meta = document.createElement('meta');
+      if (property) meta.setAttribute('property', property);
+      if (name) meta.setAttribute('name', name);
+      meta.setAttribute('content', content);
+      document.head.appendChild(meta);
+    });
+    
+    // Cleanup function to restore original title and remove meta tags
+    return () => {
+      document.title = 'Заплањске приче';
+      const metaTagsToRemove = document.querySelectorAll('meta[property^="og:"], meta[name="twitter:"], meta[name="description"]');
+      metaTagsToRemove.forEach(tag => tag.remove());
+    };
+  }, [post, author]);
   // Show/hide scroll to top button based on scroll position
   useEffect(() => {
     const handleScroll = () => {
