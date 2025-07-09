@@ -14,19 +14,6 @@ const savePostsToStorage = (posts: BlogPost[]): void => {
   localStorage.setItem('blogPosts', JSON.stringify(posts));
 };
 
-// Update super admin email
-const updatedAuthors = getRegisteredAuthors().map(author => {
-  if (author.id === '1') {
-    return {
-      ...author,
-      email: 'djoricnenad@gmail.com'
-    };
-  }
-  return author;
-});
-
-export const mockUsers: User[] = updatedAuthors;
-
 const defaultPosts: BlogPost[] = [
   {
     id: '1',
